@@ -1,104 +1,196 @@
 # imported libraries
 from numpy import *
+from decimal import Decimal
 
-def convertToInt(mantissa_str):
-    power_count = -1
+# function to convert mantissa string to an int
+def convert_matissa_to_int(mantissa_str):
     mantissa_int = 0
- 
+
     # go through mantissa
-    for i in mantissa_str:
-        mantissa_int += (int(i) * pow(2, power_count))
-        power_count -= 1
-         
-    return (mantissa_int + 1)
+    for i in range(len(mantissa_str)):
+        mantissa_int += int(mantissa_str[i]) * pow(1/2, i+1)
+     
+    return (mantissa_int)
 
-# function to find absolute error
-# |p - p*|
-def absolute_error(precise:float, approximate: float):
+# function to find absolute error: |p - p*|
+def get_absolute_error(value:float, rounded: float):
 
-    sub_operation = precise - approximate
+    return abs(value - rounded)
 
-    return abs(sub_operation)
+# function to find relative error: |p - p*| / |p|
+def get_relative_error(value:float, rounded: float):
+    value = Decimal(value)
+    rounded = Decimal(rounded)
+    absolute_err = get_absolute_error(value, rounded)
 
-# function to find relative error
-# |p - p*| / |p|
-def relative_error(precise:float, approximate: float):
+    return (absolute_err / value)
 
-    sub_operation = absolute_error(precise, approximate)
-    div_operation = sub_operation / precise
 
-    return div_operation
+def check_for_negative_1_exponent_term(function: str) -> bool:
+    if "-1**k" in function:
+        return True
 
-# # pre requisite
-# def check_for_alternating(function_we_got: str):
-#     term_check = check_for_negative_1_exponent_term(function_we_got)
+    return False
 
-#     return term_check
+# pre requisites
+def check_for_alternating(function: str):
+    term_check = check_for_negative_1_exponent_term(function)
 
-# def check_for_negative_1_exponent_term(function: str) -> bool:
-#     if "-1**k" in function:
-#         return True
+    return term_check
 
-#     return False
+# pre requisite
+def check_for_decreasing(function: str, x: int):
+    decreasing_check = True
+    k = 1
+    starting_val = abs(eval(function))
+    for k in range(2, 100):
+        result = abs(eval(function))
 
-# # pre requisite
-# # def check_for_decreasing(function_we_got: str, x: int):
-# #     decreasing_check = True
-# #     k = 1
-# #     starting_val = abs(eval(function_we_got))
-# #     for k in range(2, clea):
-# #         result = abs(eval(function_we_got))
+        if starting_val <= result:
+            decreasing_check = False
 
-# #         print(result)
-# #         if starting_val <= result:
-# #             decreasing_check = False
+    return decreasing_check
 
-# #     return decreasing_check
+def get_minimum_term_function():
+    error_tolerance = .0001
+    k = 1
 
+    flag = True
+    while flag == True:
+        func = (-1**k) * (x**k) / (k**3)
+        if abs(func) < error_tolerance:
+            flag = False
+            break
+        k += 1
+    print(k-1)
+
+
+def bisection_method(left: float, right: float, function: str):
+    # pre requisites (opposite ranges)
+    x = left
+    intial_left = eval(function)
+    x = right
+    intial_right = eval(function)
+    if intial_left * intial_right >= 0:   
+        return
+
+    tolerance: float = .0001
+    diff: float = right - left
+
+    iteration_counter = 0
+    while (diff >= tolerance and iteration_counter <= 20):
+        iteration_counter += 1
+
+        # get the mindpoint
+        mid_point = (left + right) / 2
+        x = mid_point
+        evaluated_midpoint = eval(function)
+
+        if evaluated_midpoint == 0.0:
+            break
+        
+        # get the left
+        x = left
+        evaluated_left_point = eval(function)
+        
+        # check if we have crossed the origin point: f(midpoint) * f(left_point) changed signs
+        first_conditional: bool = evaluated_left_point < 0 and evaluated_midpoint > 0
+        second_conditional: bool = evaluated_left_point > 0 and evaluated_midpoint < 0
+
+        if first_conditional or second_conditional:
+            right = mid_point
+        else:
+            left = mid_point
+        
+        diff = abs(right - left)
+
+    print("\r")
+    print(iteration_counter)
+
+def custom_derivative(value):
+    return (3 * value* value) - (2 * value)
+
+def newton_raphson(initial_approximation: float, tolerance: float, sequence: str):
+    iteration_counter = 0
+
+    # finds f
+    x = initial_approximation
+    f = eval(sequence)
+
+    # finds f' 
+    f_prime = custom_derivative(initial_approximation)
+    
+    approximation: float = f / f_prime
+    while(abs(approximation) >= tolerance):
+        # finds f
+        x = initial_approximation
+        f = eval(sequence)
+
+        # finds f' 
+        f_prime = custom_derivative(initial_approximation)
+
+        approximation = f / f_prime
+        initial_approximation -= approximation
+        iteration_counter += 1
+    
+    print("\r")
+    print(iteration_counter)
 
 if __name__ == "__main__":
 
-    # x: double = double(int('0100000001111110101110010000000000000000000000000000000000000000',2))
-    # print("{:.5f}".format(x))
-    ieee_64 = '0|10000000|1111110101110010000000000000000000000000000000000000000'
-    sign = int(ieee_64[0])
-    exponent = int(ieee_64[2 : 10], 2)
-    exponent = exponent - 127
-    mantissa_str = ieee_64[11 : ]
-    mantissa_int = convertToInt(mantissa_str)
-    real_no = pow(-1, sign) * mantissa_int * pow(2, exponent)
-    #print(real_no)
-    print("{:.5f}".format(real_no))
+    # Question 1
+    bits_64 = '0100000001111110101110010000000000000000000000000000000000000000'
+    sign = int(bits_64[0])
+    exponent = int(bits_64[1 : 12], 2)
+    exponent = exponent - 1023
+    mantissa_str = bits_64[12 : ]
+    mantissa_int = convert_matissa_to_int(mantissa_str)
+    value_question1 = pow(-1, sign) * pow(2, exponent) * (mantissa_int + 1)
+    print(value_question1)
  
-    # get three-digit chopping arithmetic
-    # chopping = real_no
-    # chopping /= 10.
-    print("\n")
-    print("{:.2f}".format(real_no))
+    # Question 2: three-digit chopping arithmetic
+    chopped_answer = int(value_question1)
+    print('\r')
+    print("{:.1f}".format(chopped_answer))
 
-    #get three-digit rounding arithmetic
-    print(round(real_no, 3))
+    # Question 3: three-digit rounding arithmetic
+    rounded_answer = round(value_question1)
+    print("\r")
+    print("{:.1f}".format(rounded_answer))
 
-    # print absolute error
-    absolute = absolute_error(real_no, round(real_no, 3))
-    print("\n")
-    print("%f" % absolute)
-    # print relative error
-    relative = relative_error(real_no, round(real_no, 3))
-    print("%f" % relative)
+    # Question 4: absolute error with value from Q1 and Q3
+    absolute_err = get_absolute_error(value_question1, rounded_answer)
+    print("\r")
+    print("{:.4f}".format(absolute_err))
+
+    # Question 4: relative error with value from Q1 and Q3
+    relative_err = get_relative_error(value_question1, rounded_answer)
+    print("{:.31f}".format(relative_err))
     
-
+    # Question 5
+    x: int = 1
+    function_question5: str = "(-1**k) * (x**k) / (k**3)"
     # check pre requisites
-    # function_a: str = "(-1**k) * (x**k) / (k**3)"
-    # x: int = 1
-    # check1: bool = check_for_alternating(function_a)
-    # check2: bool = check_for_decreasing(function_a, x)
+    check1: bool = check_for_alternating(function_question5)
+    check2: bool = check_for_decreasing(function_question5, x)
+    print("\r")
+    # if both conditons are met then we can go ahead and perform calculations
+    if check1 and check2:
+        get_minimum_term_function()
 
-    # print(check1 and check2)
+    # Question 6: Bisection Method
+    left = -4
+    right = 7
+    function_question6 = "x**3 + (4*(x**2)) - 10"
+    bisection_method(left, right, function_question6)
 
-    # if check1 and check2:
-    #     use_minimum_term_function(function_a)
-    
+    # Question 6: Newton Raphson Method
+    initial_approximation: float = -4.0
+    tolerance: float = .0001
+    #sequence: str = "(x**3) - (x**2) + 2"
+    sequence: str = "x**3 - (x**2) + 2"
+    newton_raphson(initial_approximation, tolerance, sequence)
+    print("\r")
 
     
 
