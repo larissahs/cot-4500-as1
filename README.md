@@ -4,7 +4,7 @@
 ## requirement.txt
 path: requirements.txt
 
-- NumPy was already installed using the following commands:
+- NumPy was already installed (intro assignment) using the following commands:
 1. pip install numpy
 2. pip freeze > requirements.txt 
 - To use the file: 
