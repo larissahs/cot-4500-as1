@@ -15,4 +15,4 @@ path: src/main/assignment_1.py
 
 - Open terminal
 - Once located in the right directory 
-- Run: python assignment_1.pys
+- Run: python assignment_1.py
