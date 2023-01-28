@@ -5,7 +5,6 @@ from decimal import Decimal
 # function to convert mantissa string to an int
 def convert_matissa_to_int(mantissa_str):
     mantissa_int = 0
-
     # go through mantissa
     for i in range(len(mantissa_str)):
         mantissa_int += int(mantissa_str[i]) * pow(1/2, i+1)
@@ -14,7 +13,6 @@ def convert_matissa_to_int(mantissa_str):
 
 # function to find absolute error: |p - p*|
 def get_absolute_error(value:float, rounded: float):
-
     return abs(value - rounded)
 
 # function to find relative error: |p - p*| / |p|
@@ -32,20 +30,20 @@ def check_for_negative_1_exponent_term(function: str) -> bool:
 
     return False
 
-# pre requisites
+# pre requisite for question 5
 def check_for_alternating(function: str):
     term_check = check_for_negative_1_exponent_term(function)
 
     return term_check
 
-# pre requisite
+# pre requisite for question 5
 def check_for_decreasing(function: str, x: int):
     decreasing_check = True
     k = 1
     starting_val = abs(eval(function))
+
     for k in range(2, 100):
         result = abs(eval(function))
-
         if starting_val <= result:
             decreasing_check = False
 
@@ -54,14 +52,15 @@ def check_for_decreasing(function: str, x: int):
 def get_minimum_term_function():
     error_tolerance = .0001
     k = 1
-
     flag = True
+
     while flag == True:
         func = (-1**k) * (x**k) / (k**3)
         if abs(func) < error_tolerance:
             flag = False
             break
         k += 1
+
     print(k-1)
 
 
@@ -76,8 +75,8 @@ def bisection_method(left: float, right: float, function: str):
 
     tolerance: float = .0001
     diff: float = right - left
-
     iteration_counter = 0
+
     while (diff >= tolerance and iteration_counter <= 20):
         iteration_counter += 1
 
@@ -113,23 +112,16 @@ def custom_derivative(value):
 def newton_raphson(initial_approximation: float, tolerance: float, sequence: str):
     iteration_counter = 0
 
-    # finds f
-    x = initial_approximation
-    f = eval(sequence)
+    #x = initial_approximation
 
-    # finds f' 
-    f_prime = custom_derivative(initial_approximation)
-    
-    approximation: float = f / f_prime
+    # approximation f / f'
+    approximation: float = eval(sequence) / custom_derivative(initial_approximation)
+
     while(abs(approximation) >= tolerance):
-        # finds f
         x = initial_approximation
-        f = eval(sequence)
-
-        # finds f' 
-        f_prime = custom_derivative(initial_approximation)
-
-        approximation = f / f_prime
+        
+        # approximation f / f'
+        approximation: float = eval(sequence) / custom_derivative(initial_approximation)
         initial_approximation -= approximation
         iteration_counter += 1
     
@@ -187,8 +179,8 @@ if __name__ == "__main__":
     # Question 6: Newton Raphson Method
     initial_approximation: float = -4.0
     tolerance: float = .0001
-    #sequence: str = "(x**3) - (x**2) + 2"
     sequence: str = "x**3 - (x**2) + 2"
+    #sequence: str = "x**3 + (4*(x**2)) - 10"
     newton_raphson(initial_approximation, tolerance, sequence)
     print("\r")
 

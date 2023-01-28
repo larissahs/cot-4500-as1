@@ -4,9 +4,9 @@
 ## requirement.txt
 path: requirements.txt
 
-- For this assignment I created the file and intalled NumPy using the following commands:
+- For this assignment I have NumPy previously installed using the following commands:
 1. pip install numpy
-2. pip freeze > requirements.txt (records an environment's current package list into requirements.txt)
+2. pip freeze > requirements.txt 
 - To use the file: 
 1. python pip install -r requirements.txt
 
