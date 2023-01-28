@@ -111,20 +111,16 @@ def custom_derivative(value):
 
 def newton_raphson(initial_approximation: float, tolerance: float, sequence: str):
     iteration_counter = 0
-
-    #x = initial_approximation
-
+    x = initial_approximation
     # approximation f / f'
     approximation: float = eval(sequence) / custom_derivative(initial_approximation)
 
-    while(abs(approximation) >= tolerance):
+    while (abs(approximation) >= tolerance):
         x = initial_approximation
-        
-        # approximation f / f'
         approximation: float = eval(sequence) / custom_derivative(initial_approximation)
         initial_approximation -= approximation
         iteration_counter += 1
-    
+        
     print("\r")
     print(iteration_counter)
 
@@ -177,10 +173,9 @@ if __name__ == "__main__":
     bisection_method(left, right, function_question6)
 
     # Question 6: Newton Raphson Method
-    initial_approximation: float = -4.0
+    initial_approximation: float = -4
     tolerance: float = .0001
     sequence: str = "x**3 - (x**2) + 2"
-    #sequence: str = "x**3 + (4*(x**2)) - 10"
     newton_raphson(initial_approximation, tolerance, sequence)
     print("\r")
 
